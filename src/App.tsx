@@ -4,17 +4,15 @@ import {
   ConnectionProvider,
   WalletProvider,
 } from "@solana/wallet-adapter-react";
-import {
-  clusterApiUrl, Transaction,
-  PublicKey,
-  SystemProgram,
-} from "@solana/web3.js";
+import { clusterApiUrl } from "@solana/web3.js";
 import {
   WalletModalProvider,
   WalletMultiButton,
 } from "@solana/wallet-adapter-react-ui";
 import "@solana/wallet-adapter-react-ui/styles.css";
 import './App.css'
+import { BalanceDisplay } from "./components/BalanceDisplay";
+import { TokenAccountInfo } from "./components/TokenAccountInfo";
 
 const App: FC = () => {
   const endpoint = clusterApiUrl("devnet");
@@ -24,11 +22,17 @@ const App: FC = () => {
     <ConnectionProvider endpoint={endpoint}>
       <WalletProvider wallets={wallets}>
         <WalletModalProvider>
-          <div>
+          <div style={{ padding: '20px', maxWidth: '800px', margin: '0 auto' }}>
             <h1>Solana Project</h1>
-            {/* <p>Solana wallet connection is ready!</p> */}
-            <WalletMultiButton />
-            <p>Put the rest of your app here</p>
+            <div style={{ marginBottom: '20px' }}>
+              <WalletMultiButton />
+            </div>
+            
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+              <BalanceDisplay />
+              <TokenAccountInfo />
+            </div>
+
           </div>
         </WalletModalProvider>
       </WalletProvider>
