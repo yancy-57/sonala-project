@@ -1,22 +1,39 @@
-import { useState } from 'react'
+import { useMemo } from "react";
+import type { FC } from "react";
+import {
+  ConnectionProvider,
+  WalletProvider,
+} from "@solana/wallet-adapter-react";
+import {
+  clusterApiUrl, Transaction,
+  PublicKey,
+  SystemProgram,
+} from "@solana/web3.js";
+import {
+  WalletModalProvider,
+  WalletMultiButton,
+} from "@solana/wallet-adapter-react-ui";
+import "@solana/wallet-adapter-react-ui/styles.css";
 import './App.css'
 
-function App() {
-  const [count, setCount] = useState(0)
+const App: FC = () => {
+  const endpoint = clusterApiUrl("devnet");
+  const wallets = useMemo(() => [], []);
 
   return (
-    <>
-      <h1>Solana Project</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-    </>
-  )
-}
+    <ConnectionProvider endpoint={endpoint}>
+      <WalletProvider wallets={wallets}>
+        <WalletModalProvider>
+          <div>
+            <h1>Solana Project</h1>
+            {/* <p>Solana wallet connection is ready!</p> */}
+            <WalletMultiButton />
+            <p>Put the rest of your app here</p>
+          </div>
+        </WalletModalProvider>
+      </WalletProvider>
+    </ConnectionProvider>
+  );
+};
 
-export default App
+export default App;
