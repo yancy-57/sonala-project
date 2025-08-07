@@ -8,6 +8,7 @@ import { useWallet } from "@solana/wallet-adapter-react";
 import { useState } from "react";
 import type { FC } from "react";
 
+
 export const TokenAccountInfo: FC = () => {
     const [ataDetails, setAtaDetails] = useState<any>(null);
     const { publicKey } = useWallet();
@@ -32,11 +33,19 @@ export const TokenAccountInfo: FC = () => {
                 tokenProgram: TOKEN_2022_PROGRAM_ADDRESS
             });
 
+
+            const mintAccountInfo = await rpc.getAccountInfo(mintAddress).send();
+            const accountInfo = await rpc.getAccountInfo(associatedTokenAddress).send();
+            console.log("mintAccountInfo", mintAccountInfo);
+            console.log("accountInfo", accountInfo);
+            console.log("associatedTokenAddress", associatedTokenAddress);
+            console.log("authority", authority);
+
             const ataDetails = await fetchToken(rpc, associatedTokenAddress);
             setAtaDetails(ataDetails);
         } catch (error) {
             console.error("Failed to fetch token info:", error);
-            alert("查询失败，可能 Token 账户不存在");
+            //alert("查询失败，可能 Token 账户不存在");
         }
     };
 
