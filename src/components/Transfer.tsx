@@ -108,6 +108,7 @@ export const Transfer: FC = () => {
 
             if (!toAccountInfo) {
                 console.log("接收方ATA不存在，将自动创建");
+                //创建ATA指令
                 const createATAInstruction = createAssociatedTokenAccountInstruction(
                     fromOwner,  // payer（由发送方支付创建费用）
                     toATA,      // ata
@@ -122,7 +123,7 @@ export const Transfer: FC = () => {
             const transferInstruction = createTransferInstruction(
                 fromATA,                    // source（发送方ATA）
                 toATA,                      // destination（接收方ATA）
-                fromOwner,                  // owner（发送方，需要签名）
+                fromOwner,                  // owner（发送方，需要签名） 发送方钱包地址（公钥）
                 BigInt(Number(transferAmount) * Math.pow(10, 6)), // amount（转换为最小单位）
                 [],                         // multiSigners
                 TOKEN_PROGRAM_ID           // programId
@@ -130,7 +131,7 @@ export const Transfer: FC = () => {
 
             transaction.add(transferInstruction);
 
-            // 发送交易
+            // 发送交易（有账户的只有一个交易指令，无账户的有创建账户指令和交易指令，原子性 要成功都成功 要失败全失败）
             const signature = await sendTransaction(transaction, connection);
             console.log("转账交易签名:", signature);
 
