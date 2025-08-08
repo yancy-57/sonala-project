@@ -10,6 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@esbuild-plugins/node-globals-polyfill": "^0.2.3",
     "@solana-program/token-2022": "^0.4.2",
     "@solana/kit": "^2.3.0",
     "@solana/spl-token": "^0.4.13",

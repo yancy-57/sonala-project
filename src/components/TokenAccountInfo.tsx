@@ -1,17 +1,22 @@
 import {
-    fetchToken,
-    findAssociatedTokenPda,
-    TOKEN_2022_PROGRAM_ADDRESS
-} from "@solana-program/token-2022";
-import { address, createSolanaRpc } from "@solana/kit";
-import { useWallet } from "@solana/wallet-adapter-react";
+    getAccount as fetchToken,
+    getAssociatedTokenAddress,
+} from "@solana/spl-token";
+import { address } from "@solana/kit";
+import { useWallet, useConnection } from "@solana/wallet-adapter-react";
 import { useState } from "react";
 import type { FC } from "react";
+import { TOKEN_PROGRAM_ID } from "@solana/spl-token";
+import { PublicKey } from "@solana/web3.js";
 
 
 export const TokenAccountInfo: FC = () => {
-    const [ataDetails, setAtaDetails] = useState<any>(null);
+    //token account info
+    //const [ataDetails, setAtaDetails] = useState<any>(null);
+    //balance
+    const [balance, setBalance] = useState<number|null>(null);
     const { publicKey } = useWallet();
+    const { connection } = useConnection();
 
     const handleFetchTokenInfo = async () => {
         if (!publicKey) {
@@ -20,32 +25,27 @@ export const TokenAccountInfo: FC = () => {
         }
 
         try {
-            // 你的原始代码逻辑
-            const rpc = createSolanaRpc("https://api.devnet.solana.com");
-
             const mintAddress = address("4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU");
             const authority = address("7zubBqber5Hk6aHBybPM3XAmqR6N7vzfeCtaxv23jPe5");
-            //const authority = address(publicKey.toString());
+          
+            const associatedTokenAddress = await getAssociatedTokenAddress(
+                new PublicKey(mintAddress),
+                new PublicKey(authority),
+                false,
+                TOKEN_PROGRAM_ID
+            );
 
-            const [associatedTokenAddress] = await findAssociatedTokenPda({
-                mint: mintAddress,
-                owner: authority,
-                tokenProgram: TOKEN_2022_PROGRAM_ADDRESS
-            });
-
-
-            const mintAccountInfo = await rpc.getAccountInfo(mintAddress).send();
-            const accountInfo = await rpc.getAccountInfo(associatedTokenAddress).send();
-            console.log("mintAccountInfo", mintAccountInfo);
-            console.log("accountInfo", accountInfo);
-            console.log("associatedTokenAddress", associatedTokenAddress);
-            console.log("authority", authority);
-
-            const ataDetails = await fetchToken(rpc, associatedTokenAddress);
-            setAtaDetails(ataDetails);
+            const ataDetails = await fetchToken(connection, associatedTokenAddress);
+            
+            // 🔢 计算可读的余额
+            const rawBalance = ataDetails.amount; // BigInt 原始余额
+            const decimals = 6; // USDC 有 6 位小数
+            const readableBalance = Number(rawBalance) / Math.pow(10, decimals);
+            setBalance(readableBalance)
+            
+            //setAtaDetails(ataDetails);
         } catch (error) {
             console.error("Failed to fetch token info:", error);
-            //alert("查询失败，可能 Token 账户不存在");
         }
     };
 
@@ -63,15 +63,22 @@ export const TokenAccountInfo: FC = () => {
                     cursor: 'pointer'
                 }}
             >
-                查询 Token 信息
+                查询 Token Account 余额
             </button>
 
-            {ataDetails && (
+            {/* {ataDetails && (
                 <div style={{ marginTop: '15px' }}>
                     <p><strong>ataDetails:</strong></p>
                     <pre style={{ backgroundColor: '#f5f5f5', padding: '10px', borderRadius: '4px', fontSize: '12px' }}>
-                        {JSON.stringify(ataDetails, null, 2)}
+                        {JSON.stringify(ataDetails, (key, value) =>
+                            typeof value === 'bigint' ? value.toString() : value, 2
+                        )}
                     </pre>
+                </div>
+            )} */}
+            {balance && (
+                <div style={{ marginTop: '15px' }}>
+                    <p><strong>balance:{balance} USDC</strong></p>
                 </div>
             )}
         </div>

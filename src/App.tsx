@@ -29,7 +29,7 @@ const App: FC = () => {
             </div>
             
             <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-              <BalanceDisplay />
+              {/* <BalanceDisplay /> */}
               <TokenAccountInfo />
             </div>
 
