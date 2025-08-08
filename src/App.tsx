@@ -13,6 +13,7 @@ import "@solana/wallet-adapter-react-ui/styles.css";
 import './App.css'
 import { BalanceDisplay } from "./components/BalanceDisplay";
 import { TokenAccountInfo } from "./components/TokenAccountInfo";
+import { Transfer } from "./components/Transfer";
 
 const App: FC = () => {
   const endpoint = clusterApiUrl("devnet");
@@ -29,8 +30,9 @@ const App: FC = () => {
             </div>
             
             <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-              {/* <BalanceDisplay /> */}
+              <BalanceDisplay />
               <TokenAccountInfo />
+              <Transfer />
             </div>
 
           </div>
