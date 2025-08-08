@@ -64,11 +64,6 @@ export const Transfer: FC = () => {
                 return;
             }
 
-            console.log("🚀 开始USDC转账...");
-            console.log("从:", fromOwner.toString());
-            console.log("到:", toOwner.toString());
-            console.log("金额:", transferAmount, "USDC");
-
             // 计算发送方和接收方的ATA地址
             const fromATA = await getAssociatedTokenAddress(
                 USDC_MINT,
@@ -83,9 +78,6 @@ export const Transfer: FC = () => {
                 false,
                 TOKEN_PROGRAM_ID
             );
-
-            console.log("发送方ATA:", fromATA.toString());
-            console.log("接收方ATA:", toATA.toString());
 
             // 检查发送方ATA是否存在
             const fromAccountInfo = await connection.getAccountInfo(fromATA);
