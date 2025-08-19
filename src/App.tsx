@@ -25,6 +25,7 @@ const App: FC = () => {
         <WalletModalProvider>
           <div style={{ padding: '20px', maxWidth: '800px', margin: '0 auto' }}>
             <h1>Solana Project featureChange</h1>
+             <p>Solana Solana Solana Solana</p>
             <div style={{ marginBottom: '20px' }}>
               <WalletMultiButton />
             </div>
